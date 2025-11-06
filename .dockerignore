@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+README*
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Dependencies (if any)
+node_modules/
+vendor/
+
+# Cache
+cache/
+tmp/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Database
+*.sql
+*.db
+
+# Backup files
+*.bak
+*.backup
+
+# Test files
+test_*
+debug_*
+simple_*

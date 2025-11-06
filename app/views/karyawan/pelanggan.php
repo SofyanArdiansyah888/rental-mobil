@@ -1,0 +1,363 @@
+<div class="container" id="main-menu">
+  <div class="row mb-4">
+    <div class="col-md clear-fix">
+      <?php if ($_SESSION['Login']['RoleId'] == 1 || $_SESSION['Login']['RoleId'] == 2) : ?>
+        <button class="btn btn-primary mb-3 shadow-none float-right" type="button" data-toggle="modal" data-target="#inputUser">
+          <i class="fa fa-plus fa-fw" aria-hidden="true"></i> Tambah Pelanggan
+        </button>
+      <?php else : ?>
+        <button class="btn mb-3 shadow-none float-right" type="button" data-toggle="modal" data-target="#inputUser">
+        </button>
+      <?php endif ?>
+    </div>
+  </div>
+  <div class="bg-white shadow-sm rounded pt-5 pb-4 px-5">
+    <table class="table table-hover" id="tolong">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" class="text-center">NIK</th>
+          <th scope="col" class="text-center">Nama</th>
+          <th scope="col" class="text-center">No Telp</th>
+          <th scope="col" class="text-center">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <?php
+        // TAMPILKAN BARIS
+        $no = 1;
+        foreach ($data['pelanggan'] as $user) : ?>
+
+          <tr>
+            <td><?= $no++ ?></td>
+            <td><?= ucfirst($user['NIK']); ?></td>
+            <td><?= ucfirst($user['Nama']); ?></td>
+            <td class="telp"><?= ucfirst($user['NoTelp']); ?></td>
+            <td class="text-center" style="width:240px">
+              <?php if ($_SESSION['Login']['RoleId'] == 1 || $_SESSION['Login']['RoleId'] == 2) : ?>
+                <button class="btn btn-sm btn-warning shadow-none" data-toggle="modal" title="Edit" data-target="#edit<?= $user['id']; ?>"><i class="fas fa-fw fa-edit"></i></button>
+                <button class="btn btn-sm btn-danger shadow-none" data-toggle="modal" title="Hapus" data-target="#hapus<?= $user['id']; ?>"><i class="fas fa-fw fa-trash"></i></button>
+                <button data-toggle="modal" title="Detail" data-target="#detail<?= $user['id']; ?>" class="btn btn-sm btn-info text-white shadow-none" title="Detail"><i class="fas fa-fw fa-user"></i></button>
+              <?php else : ?>
+                <button data-toggle="modal" title="Detail" data-target="#detail<?= $user['id']; ?>" class="btn btn-sm btn-info text-white shadow-none" title="Detail"><i class="fas fa-fw fa-user"></i>Detail Pelanggan</button>
+              <?php endif; ?>
+            </td>
+          </tr>
+
+          <!-- MODAL DETAIL -->
+          <div class="modal fade right" id="detail<?= $user['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog modal-full-height modal-right" role="document">
+
+              <div class="modal-content">
+
+                <div class="modal-header text-center text-primary">
+                  <h4 class="modal-title w-100 h5" id="myModalLabel">DETAIL PELANGGAN</h4>
+                </div>
+
+                <div class="modal-body px-5 grey lighten-5">
+
+                  <ul class="list-group list-group-flush">
+
+                    <div class="row list-group-item grey lighten-5">
+                      <img width="50" src="<?= BASEURL ?>/uploads/ktp/<?= $user['FotoKTP'] ?>" class="card-img" alt="Foto KTP">
+                    </div>
+
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">Nomor Induk Kependudukan</div>
+                      <div class="col" style="font-weight:500"><?= $user['NIK'] ?></div>
+                    </div>
+
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">Nama Pelanggan</div>
+                      <div class="col" style="font-weight:500"><?= $user['Nama']; ?></div>
+                    </div>
+					
+					<div class="row list-group-item grey lighten-5">
+                      <div class="col">Tanggal Lahir</div>
+                      <div class="col" style="font-weight:500"><?= $user['ttl']; ?></div>
+                    </div>
+
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">Username</div>
+                      <div class="col" style="font-weight:500"><?= $user['NamaUser']; ?></div>
+                    </div>
+
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">Jenis Kelamin</div>
+                      <div class="col" style="font-weight:500">
+                        <?php if ($user['JenisKelamin'] == 'L') {
+                            echo 'Laki-laki';
+                          } else {
+                            echo 'Perempuan';
+                          } ?>
+                      </div>
+                    </div>
+					
+					<div class="row list-group-item grey lighten-5">
+                      <div class="col">Pekerjaan</div>
+                      <div class="col" style="font-weight:500"><?= $user['pekerjaan']; ?></div>
+                    </div>
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">No Telepon</div>
+                      <div class="col telp" style="font-weight:500"><?= $user['NoTelp']; ?></div>
+                    </div>
+					
+					<div class="row list-group-item grey lighten-5">
+                      <div class="col">No Telepon Kerabat</div>
+                      <div class="col telp" style="font-weight:500"><?= $user['NoTelpKerabat']; ?></div>
+                    </div>
+
+                    <div class="row list-group-item grey lighten-5">
+                      <div class="col">Alamat</div>
+                      <div class="col" style="font-weight:500"><?= $user['Alamat']; ?></div>
+                    </div>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- AKHIR MODAL DETAIL -->
+
+          <?php if ($_SESSION['Login']['RoleId'] == 1 || $_SESSION['Login']['RoleId'] == 2) : ?>
+            <!-- AWAL MODAL EDIT-->
+            <div class="modal fade" id="edit<?= $user['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="edituUserLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header text-primary text-center">
+                    <h5 class="modal-title h5 w-100" id="edituUserLabel">UBAH DATA PELANGGAN</h5>
+                  </div>
+                  <div class="modal-body px-5 grey lighten-5">
+
+                    <!-- AWAL FORM -->
+
+                    <form action="<?= BASEURL; ?>/<?= $_SESSION['Login']['Role'] ?>/editPelanggan/" method="post" role="form">
+
+                      <input type="hidden" name="id" value="<?= $user['id'] ?>">
+
+                      <div class="form-group">
+                        <label for="NIK">Nomor Induk Kependudukan</label>
+                        <input type="number" class="form-control" id="NIK" name="NIK" required autocomplete="off" value="<?= $user['NIK'] ?>" readonly>
+                      </div>
+					  
+					   <!-- Tampilkan pratinjau foto KTP -->
+						<div class="form-group">
+							<label for="FotoKTP">Foto KTP</label>
+							<img src="<?= BASEURL ?>/uploads/ktp/<?= $user['FotoKTP'] ?>" class="img-thumbnail" alt="Foto KTP" width="200">
+						</div>
+
+						<!-- Tambahkan input untuk unggah foto KTP -->
+						<div class="form-group">
+							<label for="FotoKTP">Unggah Foto KTP Baru</label>
+							<input type="file" class="form-control-file" id="FotoKTP" name="FotoKTP">
+							<small class="text-muted">Unggah foto KTP baru jika ingin mengganti foto yang sudah ada.</small>
+						</div>
+
+            <!--           <div class="form-group">
+                        <label for="NamaUser">Username</label>
+                        <input type="email" class="form-control" id="NamaUser" name="NamaUser" readonly value="<?= $user['NamaUser'] ?>">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="Password">Password</label>
+                        <input type="password" class="form-control" id="Password" name="Password" autocomplete="off">
+                        <small class="text-danger">kosongkan jika tidak ingin mengubah password</small>
+                      </div> -->
+					  
+					  <div class="form-group">
+                        <label for="Nama">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="Nama" name="Nama" required autocomplete="off" value="<?= $user['Nama'] ?>">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="ttl">Tempat, Tanggal Lahir</label>
+                        <input type="text" class="form-control" id="ttl" name="ttl" autocomplete="off" value="<?= $user['ttl'] ?>">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="JenisKelamin">Jenis Kelamin</label>
+                        <select class="browser-default custom-select" name="JenisKelamin" id="JenisKelamin">
+                          <option value="L" <?php if ($user['JenisKelamin'] == 'L') {
+                                                  echo 'selected';
+                                                } ?>>Laki-laki</option>
+                          <option value="P" <?php if ($user['JenisKelamin'] == 'P') {
+                                                  echo 'selected';
+                                                } ?>>Perempuan</option>
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="Alamat">Alamat</label>
+                        <textarea class="form-control" id="Alamat" name="Alamat" required autocomplete="off"><?= $user['Alamat'] ?></textarea>
+                      </div>
+					  
+					  <div class="form-group">
+                        <label for="pekerjaan">Pekerjaan</label>
+                        <input type="text" class="form-control" id="pekerjaan" name="pekerjaan" autocomplete="off" value="<?= $user['pekerjaan'] ?>">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="NoTelp">No Telepon</label>
+                        <input type="text" class="form-control telp" id="NoTelp" name="NoTelp" required autocomplete="off" value="<?= $user['NoTelp'] ?>">
+                      </div>
+					  
+					  <div class="form-group">
+                        <label for="NoTelpKerabat">No Telepon Kerabat</label>
+                        <input type="text" class="form-control telp" id="NoTelpKerabat" name="NoTelpKerabat" required autocomplete="off" value="<?= $user['NoTelpKerabat'] ?>">
+                      </div>
+					  
+					  
+
+                      <input type="hidden" name="roleId" value="3">
+                      <!-- AKHIR FORM -->
+
+                  </div>
+                  <div class="modal-footer text-center justify-content-center">
+                    <button type="button" class="btn btn-outline-primary shadow-none" data-dismiss="modal">Keluar</button>
+                    <button type="submit" class="btn btn-primary shadow-none" id="submit">Ubah Data</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- AKHIR MODAL EDIT-->
+
+            <!-- AWAL HAPUS -->
+            <div class="modal fade center" id="hapus<?= $user['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header text-danger text-center">
+                    <h5 class="modal-title h5 w-100">HAPUS DATA PELANGGAN</h5>
+                  </div>
+                  <div class="modal-body px-5 grey lighten-5">
+                    <form action="<?= BASEURL; ?>/<?= $_SESSION['Login']['Role'] ?>/hapusPelanggan/<?= $user['id'] ?>" method="post">
+                      <center>
+                        <h5>
+                          Apakah anda yakin?<br>
+                          Data <b><?= $user['Nama']; ?></b> akan dihapus.
+                        </h5>
+                      </center>
+                  </div>
+                  <div class="modal-footer text-center justify-content-center">
+                    <button type="submit" class="btn btn-danger shadow-none">Ya</button>
+                    <button type="button" class="btn btn-outline-danger shadow-none" data-dismiss="modal">Tidak</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- AKHIR HAPUS -->
+          <?php endif; ?>
+        <?php endforeach; ?>
+    </table>
+  </div>
+</div>
+<?php if ($_SESSION['Login']['RoleId'] == 1 || $_SESSION['Login']['RoleId'] == 2) : ?>
+  <!-- AWAL MODAL-->
+  <div class="modal fade" id="inputUser" tabindex="-1" role="dialog" aria-labelledby="inputUserLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header text-primary text-center">
+          <h5 class="modal-title h5 w-100" id="inputUserLabel">TAMBAH DATA PELANGGAN</h5>
+        </div>
+        <div class="modal-body px-5 grey lighten-5">
+
+          <!-- AWAL FORM -->
+
+          <form action="<?= BASEURL; ?>/<?= $_SESSION['Login']['Role'] ?>/tambahPelanggan" method="post" enctype="multipart/form-data" role="form">
+
+
+            <div class="form-group">
+              <label for="NIK">Nomor Induk Kependudukan</label>
+              <input type="number" class="form-control" id="NIK" name="NIK" required autocomplete="off">
+            </div>
+			
+			<div class="form-group">
+				<label for="FotoKTP">Foto KTP</label>
+				<input type="file" class="form-control-file" id="FotoKTP" value="defaultktp.jpg" name="FotoKTP" accept="image/*" >
+				<small id="fileHelp" class="form-text text-muted">Mohon unggah foto KTP Anda.</small>
+				<img id="imagePreview" src="#" alt="Pratinjau Gambar" style="display:none ; max-width: 100px; margin-top: 10px;">
+			</div>
+			
+			<script>
+    document.getElementById('FotoKTP').onchange = function (e) {
+        let input = e.target;
+
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+
+
+            <div class="form-group">
+              <label for="Nama">Nama Lengkap</label>
+              <input type="text" class="form-control" id="Nama" name="Nama" required autocomplete="off">
+            </div>
+
+     <!--        <div class="form-group">
+              <label for="NamaUser">Username</label>
+              <input type="hidden" class="form-control" id="NamaUser" name="NamaUser" autocomplete="off">
+            </div>
+
+           <div class="form-group">
+              <label for="Password">Password</label>
+              <input type="hidden" class="form-control" id="Password" name="Password"  autocomplete="off">
+            </div> -->
+			
+			<div class="form-group">
+              <label for="ttl">Tempat, Tanggal Lahir</label>
+              <input type="text" class="form-control" id="ttl" name="ttl" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="JenisKelamin">Jenis Kelamin</label>
+              <select class="browser-default custom-select" name="JenisKelamin" id="JenisKelamin">
+                <option value="" selected disabled>Pilih jenis Kelamin</option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="Alamat">Alamat</label>
+              <textarea class="form-control" id="Alamat" name="Alamat" required autocomplete="off"></textarea>
+            </div>
+			
+			 <div class="form-group">
+              <label for="pekerjaan">Pekerjaan</label>
+              <input type="text" class="form-control" id="pekerjaan" name="pekerjaan" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+              <label for="NoTelp">No Telepon</label>
+              <input type="text" class="form-control telp" id="NoTelp" name="NoTelp" required autocomplete="off">
+            </div>
+			
+			<div class="form-group">
+              <label for="NoTelpKerabat">No Telepon Kerabat</label>
+              <input type="text" class="form-control telp" id="NoTelpKerabat" name="NoTelpKerabat" required autocomplete="off">
+            </div>
+
+            <input type="hidden" name="Foto" value="default.png">
+        </div>
+        <div class="modal-footer text-center justify-content-center">
+          <button type="button" class="btn btn-outline-primary shadow-none" data-dismiss="modal">Keluar</button>
+          <button type="submit" class="btn btn-primary shadow-none" id="submit">Simpan Data</button>
+        </div>
+        </form>
+        <!-- AKHIR FORM -->
+      </div>
+    </div>
+  </div>
+  <!-- AKHIR MODAL-->
+<?php endif; ?>

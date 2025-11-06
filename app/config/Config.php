@@ -4,6 +4,7 @@ if (getenv('DB_HOST')) {
     // Docker environment
     define('BASEURL', 'http://localhost:8080');
     define('DB_HOST', getenv('DB_HOST') ?: 'mysql');
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
     define('DB_USER', getenv('DB_USER') ?: 'simpati_user');
     define('DB_PASS', getenv('DB_PASS') ?: 'simpati_password');
     define('DB_NAME', getenv('DB_NAME') ?: 'simpati_trans');
@@ -11,6 +12,7 @@ if (getenv('DB_HOST')) {
     // Production environment
     define('BASEURL', 'https://tugas.koniwajo.com/public');
     define('DB_HOST', 'localhost');
+    define('DB_PORT', '3307');
     define('DB_USER', 'konj4576_rental');
     define('DB_PASS', 'sembarangji');
     define('DB_NAME', 'konj4576_rental');
